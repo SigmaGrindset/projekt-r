@@ -1,0 +1,24 @@
+{
+  "name": "projekt-r",
+  "version": "1.0.0",
+  "description": "Zadatak je razvoj web aplikacije koja će pomoći učenicima i studentima u planiranju učenja.\r Aplikacija treba omogućiti unos dnevnog plana učenja po pojedinim predmetima,\r kao i praćenje evidencije o stvarnom vremenu utrošenom za učenje u tom danu\r kroz unos vremenskog trajanja i opisa svake aktivnosti vezane uz učenje.",
+  "homepage": "https://github.com/SigmaGrindset/projekt-r#readme",
+  "bugs": {
+    "url": "https://github.com/SigmaGrindset/projekt-r/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SigmaGrindset/projekt-r.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0"
+  }
+}
