@@ -2,8 +2,10 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE "user"
 (
  user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ password_hash VARCHAR(255) NOT NULL,
  email VARCHAR(250) UNIQUE NOT NULL,
- username VARCHAR(30) UNIQUE NOT NULL
+ username VARCHAR(30) UNIQUE NOT NULL,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE TABLE user_regular
 (
@@ -17,7 +19,7 @@ CREATE TABLE subject
 (
  subject_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
  subject_name TEXT NOT NULL,
- subject_ects INT CHECK (subject_ects >= 0),
+ subject_ects INT NOT NULL CHECK (subject_ects >= 0),
  subject_active BOOLEAN NOT NULL DEFAULT FALSE,
  user_id UUID NOT NULL REFERENCES user_regular(user_id) ON DELETE CASCADE,
  UNIQUE(user_id, subject_name)
@@ -69,3 +71,11 @@ CREATE TABLE session_tag_map (
   tag_id UUID NOT NULL REFERENCES session_tag(tag_id) ON DELETE RESTRICT,
   PRIMARY KEY (session_id, tag_id)
 );
+CREATE INDEX IF NOT EXISTS idx_subject_user ON subject(user_id);
+CREATE INDEX IF NOT EXISTS idx_daily_plan_user ON daily_plan(user_regular_id);
+CREATE INDEX IF NOT EXISTS idx_session_user ON daily_study_session(user_id);
+CREATE INDEX IF NOT EXISTS idx_session_subject ON daily_study_session(subject_id);
+CREATE INDEX IF NOT EXISTS idx_subject_plan_daily ON subject_plan(daily_plan_id);
+CREATE INDEX IF NOT EXISTS idx_subject_plan_subject ON subject_plan(subject_id);
+CREATE INDEX IF NOT EXISTS idx_study_type_map_type ON session_study_type(study_type_id);
+CREATE INDEX IF NOT EXISTS idx_tag_map_tag ON session_tag_map(tag_id);
