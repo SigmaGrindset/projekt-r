@@ -29,5 +29,9 @@ const userRouter = require('./routes/user.routes.js');
 
 app.use('/user', userRouter);
 
+app.get('/', (req, res) => {
+  res.redirect('/user');
+});
+
 app.listen(8080);
 console.log('Server is running on http://localhost:8080');

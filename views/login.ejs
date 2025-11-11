@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LearnFlow — Planer učenja</title>
+    <link rel="stylesheet" href="/styles/logreg.css" />
+  </head>
+
+  <body>
+    <div id="login-modal" class="modal">
+      <div class="modal-content small">
+        <span class="close" onclick="closeModal('login-modal')">&times;</span>
+        <h2>Prijava</h2>
+        <form action="/login" method="POST" class="form">
+          <label for="email">Email adresa</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="password">Lozinka</label>
+          <input type="password" id="password" name="password" required />
+
+          <button type="submit" class="btn btn-primary">Prijavi se</button>
+          <p class="switch-text">
+            Nemaš račun?
+            <a href="#" onclick="switchModal('login-modal','register-modal')"
+              >Registriraj se</a
+            >
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
