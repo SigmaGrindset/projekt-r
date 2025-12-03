@@ -1,112 +1,96 @@
 <!DOCTYPE html>
 <html lang="hr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>LearnFlow — Planer učenja</title>
-    <link rel="stylesheet" href="/styles/home.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="container">
-        <div class="brand">LearnFlow</div>
 
-        <div class="auth">
-          <a href="/user/login" class="btn btn-ghost">Login</a>
-          <a href="/user/register" class="btn btn-primary">Register</a>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LearnFlow — Planer učenja</title>
+  <link rel="stylesheet" href="/styles/home.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">LearnFlow</div>
+
+      <div class="auth">
+        <a href="/user/login" class="btn btn-ghost">Login</a>
+        <a href="/user/register" class="btn btn-primary">Register</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <section class="hero container">
-      <div class="hero-text">
-        <h1>
-          Organiziraj svoje učenje uz <span class="accent">LearnFlow</span>
-        </h1>
-        <p>
-          Planiraj dnevne zadatke, mjeri vrijeme učenja i vizualno prati svoj
-          napredak — sve na jednom mjestu.
-        </p>
-        <div class="hero-actions">
-          <a href="/user/register" class="btn btn-primary">Započni besplatno</a>
-          <a href="/user/login" class="btn btn-outline">Već imaš račun?</a>
-        </div>
-      </div>
-
-      <div class="hero-image">
-        <img
-          src="/images/slikaProjektR.png"
-          alt="Pregled aplikacije LearnFlow"
-        />
-      </div>
-    </section>
-
-    <section id="features" class="features container">
-      <h2>Što ti LearnFlow omogućuje</h2>
-      <div class="feature-grid">
-        <div class="card">
-          <h3>📘 Plan po predmetima</h3>
-          <p>
-            Unesi svoj raspored učenja po danima i predmetima. Jasno vidi koliko
-            vremena trošiš na svaki predmet.
-          </p>
-        </div>
-        <div class="card">
-          <h3>⏱️ Praćenje vremena</h3>
-          <p>
-            Pokreni tajmer za svaku aktivnost i zabilježi stvarno trajanje
-            učenja uz bilješke i opis.
-          </p>
-        </div>
-        <div class="card">
-          <h3>📊 Analitika i grafovi</h3>
-          <p>
-            Vizualiziraj svoj napredak kroz tjedne i mjesečne grafikone te
-            otkrij gdje napreduješ najviše.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section id="how" class="how container">
-      <h2>Kako LearnFlow funkcionira</h2>
-      <ol>
-        <li>Kreiraj račun i dodaj svoje predmete.</li>
-        <li>Unesi dnevni plan i pokreni tajmer dok učiš.</li>
-        <li>Pregledaj grafove i izvještaje o napretku.</li>
-      </ol>
-    </section>
-
-    <section id="about" class="about container">
-      <h2>Zašto smo napravili LearnFlow</h2>
+  <section class="hero container">
+    <div class="hero-text">
+      <h1>
+        Organiziraj svoje učenje uz <span class="accent">LearnFlow</span>
+      </h1>
       <p>
-        LearnFlow je nastao s idejom da učenicima i studentima olakša planiranje
-        i praćenje učenja. Pomaže ti razviti dosljednost i bolje razumjeti svoje
-        navike.
+        Planiraj dnevne zadatke, mjeri vrijeme učenja i vizualno prati svoj
+        napredak — sve na jednom mjestu.
       </p>
-    </section>
-
-    <footer class="footer">
-      <div class="container">
-        <p>LearnFlow — Tvoj osobni planer učenja.</p>
+      <div class="hero-actions">
+        <a href="/user/register" class="btn btn-primary">Započni besplatno</a>
+        <a href="/user/login" class="btn btn-outline">Već imaš račun?</a>
       </div>
-    </footer>
-    <script>
-      function openModal(id) {
-        document.getElementById(id).style.display = "block";
-      }
-      function closeModal(id) {
-        document.getElementById(id).style.display = "none";
-      }
-      function switchModal(from, to) {
-        closeModal(from);
-        openModal(to);
-      }
-      window.onclick = function (event) {
-        if (event.target.classList.contains("modal")) {
-          event.target.style.display = "none";
-        }
-      };
-    </script>
-  </body>
+    </div>
+
+    <div class="hero-image">
+      <img src="/images/slikaProjektR.png" alt="Pregled aplikacije LearnFlow" />
+    </div>
+  </section>
+
+  <section id="features" class="features container">
+    <h2>Što ti LearnFlow omogućuje</h2>
+    <div class="feature-grid">
+      <div class="card">
+        <h3>📘 Plan po predmetima</h3>
+        <p>
+          Unesi svoj raspored učenja po danima i predmetima. Jasno vidi koliko
+          vremena trošiš na svaki predmet.
+        </p>
+      </div>
+      <div class="card">
+        <h3>⏱️ Praćenje vremena</h3>
+        <p>
+          Pokreni tajmer za svaku aktivnost i zabilježi stvarno trajanje
+          učenja uz bilješke i opis.
+        </p>
+      </div>
+      <div class="card">
+        <h3>📊 Analitika i grafovi</h3>
+        <p>
+          Vizualiziraj svoj napredak kroz tjedne i mjesečne grafikone te
+          otkrij gdje napreduješ najviše.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="how container">
+    <h2>Kako LearnFlow funkcionira</h2>
+    <ol>
+      <li>Kreiraj račun i dodaj svoje predmete.</li>
+      <li>Unesi dnevni plan i pokreni tajmer dok učiš.</li>
+      <li>Pregledaj grafove i izvještaje o napretku.</li>
+    </ol>
+  </section>
+
+  <section id="about" class="about container">
+    <h2>Zašto smo napravili LearnFlow</h2>
+    <p>
+      LearnFlow je nastao s idejom da učenicima i studentima olakša planiranje
+      i praćenje učenja. Pomaže ti razviti dosljednost i bolje razumjeti svoje
+      navike.
+    </p>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>LearnFlow — Tvoj osobni planer učenja.</p>
+    </div>
+  </footer>
+  <script type="text/javascript" src="/scripts/modal.js"></script>
+</body>
+
 </html>
