@@ -14,15 +14,17 @@
 
   --radius: 14px;
 
-  --shadow: 0 6px 24px rgba(0,0,0,0.06);
+  --shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
 
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial;
 
 }
 
-* { 
+* {
 
-    box-sizing: border-box; margin: 0; padding: 0; 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 
 }
 
@@ -40,25 +42,40 @@ body {
 
 @keyframes fadeInUp {
 
-  from { opacity: 0; transform: translateY(40px); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
 
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
 }
 
 @keyframes fadeIn {
 
-  from { opacity: 0; }
+  from {
+    opacity: 0;
+  }
 
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 
 }
 
 @keyframes float {
 
-  0%, 100% { transform: translateY(0); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
 
-  50% { transform: translateY(-10px); }
+  50% {
+    transform: translateY(-10px);
+  }
 
 }
 
@@ -112,6 +129,10 @@ body {
 
 }
 
+a {
+  text-decoration: none;
+}
+
 .btn {
 
   display: inline-block;
@@ -127,6 +148,7 @@ body {
   transition: all 0.2s ease;
 
 }
+
 .btn-primary {
 
   background: #fff;
@@ -139,7 +161,7 @@ body {
 
   color: #fff;
 
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 
 }
 
@@ -157,7 +179,7 @@ body {
 
   transform: translateY(-2px) scale(1.05);
 
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -226,10 +248,11 @@ body {
   display: flex;
 
   justify-content: center;
-  
+
   animation: fadeInUp 1.2s ease forwards;
 
 }
+
 .hero-image img {
 
   max-width: 500px;
@@ -292,7 +315,7 @@ body {
 
   transform: translateY(-6px);
 
-  box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -407,5 +430,5 @@ body {
     margin-bottom: 30px;
 
   }
-  
+
 }
