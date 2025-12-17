@@ -22,7 +22,8 @@ app.use(session({
   cookie: {
     secure: false,
     maxAge: 24 * 60 * 60 * 1000
-  }
+  },
+  user: null
 }));
 
 app.set('views', path.join(__dirname, 'views'));
@@ -32,7 +33,7 @@ const userRouter = require('./routes/user.routes.js');
 app.use('/user', userRouter);
 
 app.get('/', (req, res) => {
-  res.redirect('/user');
+  return res.redirect('/user');
 });
 
 app.get("/db-test", async (req, res) => {
@@ -42,7 +43,7 @@ app.get("/db-test", async (req, res) => {
 })
 
 
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -1,38 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-
+const { requireAuth, requireGuest } = require("../middleware/userMiddleware")
 
 router.get('/', (req, res) => {
   res.render('home', { message: null });
 });
 
 
-router.get('/login', (req, res) => {
+router.get('/login', requireGuest, (req, res) => {
   res.render('login', { message: null });
 });
 
-router.get('/register', (req, res) => {
+router.get('/register', requireGuest, (req, res) => {
   res.render('register', { message: null });
 });
 
-router.post('/login', async (req, res) => {
-  const passwordValid = await User.validateUser(req.body)
-  if (passwordValid) {
-    //treba spremit podatke u useru u session
-  }
-  else {
-    //redirect na login sa odgovarajucim errorom
+router.post("/logout", requireAuth, (req, res) => {
+  req.session.user = null
+  return res.redirect("/user/login")
+})
+
+router.post('/login', requireGuest, async (req, res) => {
+  try {
+    const passwordValid = await User.validateUser(req.body)
+    if (passwordValid) {
+      req.session.user = req.body.user
+      return res.status(200).json({ msg: "Success" })
+    }
+    else {
+      return res.status(200).json({ error: "Invalid credentials" })
+    }
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', requireGuest, async (req, res) => {
+  console.log(req.body)
   try {
     await User.createUser(req.body);
-    res.redirect('/user/login')
+    return res.redirect('/user/login')
   } catch (error) {
     console.log(error);
-    throw error;
+    return res.status(500).json({ error: error.message })
   }
 });
 
