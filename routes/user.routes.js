@@ -16,9 +16,9 @@ router.get('/register', requireGuest, (req, res) => {
   res.render('register', { message: null });
 });
 
-router.post("/logout", requireAuth, (req, res) => {
+router.get("/logout", requireAuth, (req, res) => {
   req.session.user = null
-  return res.redirect("/user/login")
+  return res.redirect("/user")
 })
 
 router.post('/login', requireGuest, async (req, res) => {
