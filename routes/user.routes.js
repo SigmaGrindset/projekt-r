@@ -22,11 +22,13 @@ router.post("/logout", requireAuth, (req, res) => {
 })
 
 router.post('/login', requireGuest, async (req, res) => {
+  console.log(req.body)
   try {
     const passwordValid = await User.validateUser(req.body)
     if (passwordValid) {
       req.session.user = req.body.user
-      return res.status(200).json({ msg: "Success" })
+      return res.redirect("/user")
+      // return res.status(200).json({ msg: "Success" })
     }
     else {
       return res.status(200).json({ error: "Invalid credentials" })

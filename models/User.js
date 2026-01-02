@@ -25,6 +25,7 @@ class User {
   }
 
   static async validateUser(userLoginRequest) {
+    console.log(userLoginRequest)
     let client;
     try {
       client = await pool.connect();
