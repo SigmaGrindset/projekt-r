@@ -10,8 +10,8 @@ function switchModal(from, to) {
   closeModal(from);
   openModal(to);
 }
-window.onclick = function (event) {
-  if (event.target.classList.contains("modal")) {
-    event.target.style.display = "none";
-  }
-};
+// window.onclick = function (event) {
+//   if (event.target.classList.contains("modal")) {
+//     event.target.style.display = "none";
+//   }
+// };
