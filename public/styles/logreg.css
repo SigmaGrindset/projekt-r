@@ -148,6 +148,21 @@ body {
   text-decoration: underline;
 }
 
+.alert{
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 12px;
+  animation: fadeInUp 0.25s ease forwards;
+}
+
+.alert-error{
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #991b1b;
+}
+
 /* RESPONSIVE */
 @media (max-width: 500px) {
   .modal-content.small,

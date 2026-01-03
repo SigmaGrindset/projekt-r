@@ -2,52 +2,60 @@ const { pool } = require('../config/db');
 const bcrypt = require('bcrypt');
 
 class User {
-  static async createUser(userData) {
+  static async validateUser(userLoginRequest) {
+    console.log(userLoginRequest);
     let client;
+
     try {
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
-      const unique = await User.checkUsernameAndEmailUniqueness(userData.username, userData.email)
-      if (unique) {
-        client = await pool.connect();
-        const query = 'INSERT INTO users (email, username, password_hash) VALUES ($1, $2, $3)';
-        const values = [userData.email, userData.username, hashedPassword];
-        await client.query(query, values);
-      } else {
-        throw new Error("User already exists.")
-      }
+      client = await pool.connect();
+
+      const query = 'SELECT username, password_hash FROM users WHERE username = $1';
+      const values = [userLoginRequest.username];
+
+      const res = await client.query(query, values);
+
+      if (res.rows.length === 0) return null;
+
+      const storedHashedPassword = res.rows[0].password_hash;
+      const passwordMatch = await bcrypt.compare(userLoginRequest.password, storedHashedPassword);
+
+      if (!passwordMatch) return null;
+
+      return { username: res.rows[0].username };
     } catch (err) {
       console.log(err);
       throw err;
-    }
-    finally {
+    } finally {
       if (client) client.release();
     }
   }
 
-  static async validateUser(userLoginRequest) {
-    console.log(userLoginRequest)
+  static async createUser(userData) {
     let client;
     try {
-      client = await pool.connect();
-      let res;
-      if (userLoginRequest.user.includes('@')) {
-        //login sa emailom
-        const query = 'SELECT password_hash FROM users WHERE email = $1';
-        const values = [userLoginRequest.user];
-        res = await client.query(query, values);
-      } else {
-        //login sa usernameom
-        const query = 'SELECT password_hash FROM users WHERE username = $1';
-        const values = [userLoginRequest.user];
-        res = await client.query(query, values);
+      if (!userData.email || !userData.email.includes('@')) {
+        throw new Error("Unesi ispravnu email adresu.");
       }
-      if (res.rows.length === 0) {
-        return false;
-      }
-      const storedHashedPassword = res.rows[0].password_hash;
-      const passwordMatch = await bcrypt.compare(userLoginRequest.password, storedHashedPassword);
-      return passwordMatch;
 
+      client = await pool.connect();
+
+      const check = await client.query(
+        'SELECT email, username FROM users WHERE email = $1 OR username = $2',
+        [userData.email, userData.username]
+      );
+
+      const emailTaken = check.rows.some(r => r.email === userData.email);
+      const usernameTaken = check.rows.some(r => r.username === userData.username);
+
+      if (emailTaken) throw new Error("Email adresa je već registrirana.");
+      if (usernameTaken) throw new Error("Korisničko ime je zauzeto.");
+
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+      await client.query(
+        'INSERT INTO users (email, username, password_hash) VALUES ($1, $2, $3)',
+        [userData.email, userData.username, hashedPassword]
+      );
     } catch (err) {
       console.log(err);
       throw err;

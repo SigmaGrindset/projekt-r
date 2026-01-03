@@ -15,12 +15,29 @@
         <span class="close">&times;</span>
       </a>
       <h2>Registracija</h2>
+
+      <% if (message) { %>
+        <div class="alert alert-error"><%= message %></div>
+      <% } %>
+
       <form action="/user/register" method="POST" class="form">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" required />
+        <input
+          type="text"
+          id="username"
+          name="username"
+          required
+          value="<%= (formData && formData.username) ? formData.username : '' %>"
+        />
 
         <label for="email">Email adresa</label>
-        <input type="email" id="email" name="email" required />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          value="<%= (formData && formData.email) ? formData.email : '' %>"
+        />
 
         <label for="password">Lozinka</label>
         <input type="password" id="password" name="password" required />
@@ -29,6 +46,7 @@
         <input type="password" id="confirm" name="confirm" required />
 
         <button type="submit" class="btn btn-primary">Kreiraj račun</button>
+
         <p class="switch-text">
           Već imaš račun?
           <a href="/user/login" onclick="switchModal('register-modal','login-modal')">Prijavi se</a>
@@ -38,7 +56,6 @@
   </div>
 
   <script type="text/javascript" src="/scripts/modal.js"></script>
-
 </body>
 
 </html>

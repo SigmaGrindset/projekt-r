@@ -14,9 +14,22 @@
       <a href="/" class="brand">LearnFlow</a>
 
       <div class="auth">
-        <a href="/user/login" class="btn btn-ghost">Login</a>
-        <a href="/user/register" class="btn btn-primary">Register</a>
+        <% if (user) { %>
+
+          <% if (user.username) { %>
+            <a href="/user" class="btn btn-ghost btn-user"><%= user.username %></a>
+          <% } %>
+
+          <form method="POST" action="/user/logout" class="logout-form">
+            <button type="submit" class="btn btn-ghost btn-logout">Odjava</button>
+          </form>
+
+        <% } else { %>
+          <a href="/user/login" class="btn btn-ghost">Login</a>
+          <a href="/user/register" class="btn btn-primary">Register</a>
+        <% } %>
       </div>
+
     </div>
   </header>
 
@@ -30,9 +43,18 @@
         napredak — sve na jednom mjestu.
       </p>
       <div class="hero-actions">
-        <a href="/user/register" class="btn btn-primary">Započni besplatno</a>
-        <a href="/user/login" class="btn btn-outline">Već imaš račun?</a>
+        <a
+          href="<%= user ? '/app' : '/user/register' %>"
+          class="btn btn-primary"
+        >
+          Uđi u aplikaciju
+        </a>
+
+        <% if (!user) { %>
+          <a href="/user/login" class="btn btn-outline">Već imaš račun?</a>
+        <% } %>
       </div>
+
     </div>
 
     <div class="hero-image">
