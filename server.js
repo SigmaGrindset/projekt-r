@@ -36,6 +36,9 @@ app.get('/', (req, res) => {
   return res.redirect('/user');
 });
 
+const subjectsRouter = require("./routes/subjects.routes");
+app.use("/subjects", subjectsRouter);
+
 app.get("/db-test", async (req, res) => {
   const code = await testConnection(req, res)
   const msg = parseInt(code) === 200 ? "Success" : "Fail"
