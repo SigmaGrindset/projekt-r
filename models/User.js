@@ -9,7 +9,7 @@ class User {
     try {
       client = await pool.connect();
 
-      const query = 'SELECT username, password_hash FROM users WHERE username = $1';
+      const query = 'SELECT id, username, password_hash FROM users WHERE username = $1';
       const values = [userLoginRequest.username];
 
       const res = await client.query(query, values);
@@ -21,7 +21,7 @@ class User {
 
       if (!passwordMatch) return null;
 
-      return { username: res.rows[0].username };
+      return { id: res.rows[0].id, username: res.rows[0].username };
     } catch (err) {
       console.log(err);
       throw err;
