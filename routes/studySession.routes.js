@@ -1,83 +1,76 @@
+const express = require("express");
+const studySessionRouter = express.Router();
 
-const express = require("express")
-
-const studySessionRouter = express.Router()
 const { requireAuth } = require("../middleware/userMiddleware");
-const StudySession = require("../models/StudySession")
-
-studySessionRouter.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  next();
-});
-
+const StudySession = require("../models/StudySession");
+const Subject = require("../models/Subject");
 
 studySessionRouter.get("/", requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+
   try {
-    const userId = req.session.user.id
-    const studySessions = await StudySession.getUserStudySessions(userId, req.body?.startedAt)
+    const startedAt = req.query?.startedAt || null;
+
+    const [studySessions, subjects] = await Promise.all([
+      StudySession.getUserStudySessions(userId, startedAt),
+      Subject.getSubjectsForUser(userId),
+    ]);
+
     return res.render("studySessions", {
       message: null,
       formData: null,
-      studySessions
-    })
-    // return res.json({ studySessions })
+      studySessions,
+      subjects, // ✅ uvijek šaljemo
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.render("studySessions", {
       message: "Došlo je do greške pri dohvaćanju sesija.",
       formData: null,
-      studySessions: []
-    })
-    // return res.status(500).json({ error: err })
+      studySessions: [],
+      subjects: [], // ✅ uvijek šaljemo
+    });
   }
-})
+});
 
 studySessionRouter.post("/", requireAuth, async (req, res) => {
+  const userId = req.session.user.id;
+
   try {
-    const userId = req.session.user.id
     await StudySession.createStudySession({
       startedAt: req.body.startedAt,
-      endedAt: req.body.endedAt,
-      description: req.body.description,
-      userId: userId,
+      endedAt: req.body.endedAt || null,
+      description: req.body.description || "",
+      userId,
       subjectId: req.body.subjectId,
-    })
-    const studySessions = await StudySession.getUserStudySessions(userId)
-    return res.render("studySessions", {
-      message: "Study session je dodan.",
-      formData: null,
-      studySessions
-    })
-    // return res.status(200).json({ message: "uspjesno dodan study session" })
+    });
+
+    return res.redirect("/study-session");
   } catch (err) {
-    console.log(err)
-    const userId = req.session.user.id
-    const studySessions = await StudySession.getUserStudySessions(userId)
+    console.log(err);
+
+    const [studySessions, subjects] = await Promise.all([
+      StudySession.getUserStudySessions(userId),
+      Subject.getSubjectsForUser(userId),
+    ]);
+
     return res.render("studySessions", {
       message: "Problem pri stvaranju sessiona.",
-      formData: null,
-      studySessions
-    })
-    // return res.status(500).json({ error: err })
+      formData: req.body,
+      studySessions,
+      subjects, // ✅ uvijek šaljemo
+    });
   }
-})
+});
 
 studySessionRouter.post("/delete/:studySessionId", requireAuth, async (req, res) => {
   try {
-    await StudySession.deleteStudySession(req.params.studySessionId)
-    return res.redirect("/study-session")
-    // return res.status(200).json({ message: "uspjesno izbrisan study session" })
+    await StudySession.deleteStudySession(req.params.studySessionId);
+    return res.redirect("/study-session");
   } catch (err) {
-    console.log(err)
-    return res.render("studySessions", {
-      message: "Problem pri stvaranju sessiona.",
-      formData: null,
-      studySessions: []
-    })
-
-    // return res.status(500).json({ error: err })
+    console.log(err);
+    return res.redirect("/study-session");
   }
-})
+});
 
-
-module.exports = studySessionRouter
+module.exports = studySessionRouter;
