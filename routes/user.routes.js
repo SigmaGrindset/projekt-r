@@ -21,13 +21,11 @@ router.get('/register', requireGuest, (req, res) => {
   res.render('register', { message: null, formData: null });
 });
 
-// ✅ BITNO: logout mora biti POST jer ga šalješ iz <form method="POST"...>
 router.post("/logout", requireAuth, (req, res) => {
   req.session.user = null;
   return res.redirect("/user");
 });
 
-// (opcionalno) ako ti negdje još postoji stari link logout, neka i GET radi:
 router.get("/logout", requireAuth, (req, res) => {
   req.session.user = null;
   return res.redirect("/user");
@@ -56,7 +54,6 @@ router.post('/login', requireGuest, async (req, res) => {
 
 router.post('/register', requireGuest, async (req, res) => {
   try {
-    // ✅ provjera lozinki
     if (req.body.password !== req.body.confirm) {
       return res.status(400).render('register', {
         message: 'Lozinke nisu iste.',
