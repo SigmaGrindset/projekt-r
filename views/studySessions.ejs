@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sesije</title>
+  <link rel="stylesheet" href="/styles/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/app">LearnFlow</a>
+
+    <nav class="nav">
+      <a href="/subjects">Predmeti</a>
+      <a class="active" href="/study-session">Sesije</a>
+
+      <% if (user) { %>
+        <span class="userpill"><%= user.username %></span>
+        <a class="muted" href="/user/logout">Odjava</a>
+      <% } else { %>
+        <a href="/user/login">Login</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <div>
+        <h1>Sesije učenja</h1>
+        <p class="subtitle">Dodaj session i prati svoj napredak ✨</p>
+      </div>
+
+      <form class="mini-filter" method="GET" action="/study-session">
+        <label class="sr-only">Filter po datumu</label>
+        <input type="date" name="startedAt" />
+        <button class="btn-soft" type="submit">Filtriraj</button>
+      </form>
+    </div>
+
+    <% if (message) { %>
+      <div class="flash"><%= message %></div>
+    <% } %>
+
+    <%
+      const subjectsSafe = (typeof subjects !== "undefined" && subjects) ? subjects : [];
+      const sessionsSafe = (typeof studySessions !== "undefined" && studySessions) ? studySessions : [];
+      const subjectMap = {};
+      subjectsSafe.forEach(s => subjectMap[s.id] = s.name);
+    %>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-title">
+          <h2>Dodaj sesiju</h2>
+          <span class="pill">+ new</span>
+        </div>
+
+        <% if (subjectsSafe.length === 0) { %>
+          <div class="empty">
+            <p>Prvo dodaj barem jedan predmet da možeš napravit session.</p>
+            <a class="link" href="/subjects">Idi na predmete →</a>
+          </div>
+        <% } else { %>
+          <form method="POST" action="/study-session" class="form">
+            <div class="row">
+              <div>
+                <label>Predmet</label>
+                <select name="subjectId" required>
+                  <% subjectsSafe.forEach(s => { %>
+                    <option value="<%= s.id %>"><%= s.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div>
+                <label>Opis</label>
+                <input name="description" placeholder="npr. zadaci 1–10" value="<%= formData?.description || '' %>" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Početak</label>
+                <input type="datetime-local" name="startedAt" required value="<%= formData?.startedAt || '' %>" />
+              </div>
+              <div>
+                <label>Kraj</label>
+                <input type="datetime-local" name="endedAt" value="<%= formData?.endedAt || '' %>" />
+              </div>
+            </div>
+
+            <button class="btn-primary" type="submit">Spremi sesiju</button>
+          </form>
+        <% } %>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <h2>Tvoje sesije</h2>
+          <span class="pill"><%= sessionsSafe.length %></span>
+        </div>
+
+        <% if (sessionsSafe.length === 0) { %>
+          <div class="empty">
+            <p>Nemaš još sesija. Kad dodaš prvu, pojavit će se ovdje ✨</p>
+          </div>
+        <% } else { %>
+          <ul class="list">
+            <% sessionsSafe.forEach(ss => { %>
+              <li class="list-item">
+                <div class="list-left">
+                  <div class="list-title">
+                    <span class="tag"><%= subjectMap[ss.subject_id] || ('Predmet #' + ss.subject_id) %></span>
+                    <% if (ss.description) { %>
+                      <span class="dot">•</span>
+                      <span><%= ss.description %></span>
+                    <% } %>
+                  </div>
+
+                  <div class="muted small">
+                    <%= new Date(ss.started_at).toLocaleString('hr-HR') %>
+                    <% if (ss.ended_at) { %>
+                      → <%= new Date(ss.ended_at).toLocaleString('hr-HR') %>
+                    <% } %>
+                  </div>
+                </div>
+
+                <form method="POST" action="/study-session/delete/<%= ss.id %>">
+                  <button class="btn-danger" type="submit">Obriši</button>
+                </form>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

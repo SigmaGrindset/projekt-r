@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Predmeti</title>
+  <link rel="stylesheet" href="/styles/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/app">LearnFlow</a>
+
+    <nav class="nav">
+      <a class="active" href="/subjects">Predmeti</a>
+      <a href="/study-session">Sesije</a>
+
+      <% if (user) { %>
+        <span class="userpill"><%= user.username %></span>
+        <a class="muted" href="/user/logout">Odjava</a>
+      <% } else { %>
+        <a href="/user/login">Login</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <div>
+        <h1>Predmeti</h1>
+        <p class="subtitle">Organiziraj sve što učiš – po predmetima 🌸</p>
+      </div>
+    </div>
+
+    <% if (message) { %>
+      <div class="flash"><%= message %></div>
+    <% } %>
+
+    <section class="grid">
+      <div class="card">
+        <div class="card-title">
+          <h2>Dodaj predmet</h2>
+          <span class="pill">+ new</span>
+        </div>
+
+        <form method="POST" action="/subjects" class="form">
+          <label>Naziv</label>
+          <input name="name" required placeholder="npr. Matematika" value="<%= formData?.name || '' %>" />
+          <button class="btn-primary" type="submit">Dodaj</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <h2>Tvoji predmeti</h2>
+          <span class="pill"><%= subjects?.length || 0 %></span>
+        </div>
+
+        <% if (!subjects || subjects.length === 0) { %>
+          <div class="empty">
+            <p>Nemaš još predmeta. Dodaj prvi i kreni ✨</p>
+          </div>
+        <% } else { %>
+          <ul class="list">
+            <% subjects.forEach(s => { %>
+              <li class="list-item">
+                <div class="list-left">
+                  <div class="list-title"><strong><%= s.name %></strong></div>
+                  <div class="muted small">ID: <%= s.id %></div>
+                </div>
+
+                <form method="POST" action="/subjects/delete/<%= s.id %>">
+                  <button class="btn-danger" type="submit">Obriši</button>
+                </form>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
