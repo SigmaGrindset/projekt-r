@@ -44,6 +44,9 @@ app.use("/study-session", studySessionRouter);
 const planRouter = require("./routes/plan.routes");
 app.use("/plan", planRouter);
 
+const graphRouter = require("./routes/graph.routes");
+app.use("/graph", graphRouter);
+
 // ✅ entry point u aplikaciju (ovo je ruta na koju treba vodit "Uđi u app")
 app.get("/app", (req, res) => {
   if (!req.session?.user) return res.redirect("/user/login");
