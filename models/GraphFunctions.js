@@ -32,14 +32,14 @@ class GraphFunctions {
             const dataByTimeframe = {};
             for (const interval of intervalList){
                 if (result[interval].length === 0) {
-                    dataByTimeframe[interval] = "no-data";
+                    dataByTimeframe[interval] = [{x: [], y: [], name: `Study Time in the last ${interval}`, type: 'bar'}];
                     continue;
                 }
                 const x = [];
                 const y = [];
                 for (const row of result[interval]){
                     x.push(row.subject_name);
-                    y.push(Number(row.total_study_time));
+                    y.push(Number(row.total_study_time) || 0);
                 }
                 dataByTimeframe[interval] = [{ x, y, name: `Study Time in the last ${interval}`,type: 'bar'}];
             }
@@ -76,7 +76,7 @@ class GraphFunctions {
                     const y = [];
                     for(const row of res.rows){
                         x.push(row.study_date);
-                        y.push(Number(row.total_study_time));
+                        y.push(Number(row.total_study_time) || 0);
                     }
                     data[interval].push({ x, y, name: subject.name, type: 'scatter' });
                 }
@@ -86,6 +86,96 @@ class GraphFunctions {
             if (client) client.release();
         }
     }
+
+    static async getStudyByDaysOfWeek(userId){
+        let client;
+        const numByDay = {0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday"};
+        const x = [];
+        const y = [];
+        try{
+            client = await pool.connect();
+            const res = await client.query(
+                `
+                SELECT EXTRACT(DOW FROM ss.started_at) AS day_of_week,
+                    EXTRACT(EPOCH FROM SUM(ss.ended_at - ss.started_at))/60 AS total_study_time
+                FROM study_session ss
+                WHERE ss.user_id = $1
+                GROUP BY day_of_week
+                ORDER BY day_of_week ASC
+                `,
+                [userId]
+            )
+            const dataByDay = {};
+            for(const row of res.rows){
+                dataByDay[numByDay[row.day_of_week]] = Number(row.total_study_time) || 0;
+            }
+            const allDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            for(const day of allDays){
+                if(!(day in dataByDay)){
+                    dataByDay[day] = 0;
+                }
+            }
+            console.log(dataByDay);
+            for(const day of allDays){
+                x.push(day);
+                y.push(dataByDay[day]);
+            }
+            return [{x, y, type: 'bar', name: 'Study Time by Days of the Week'}];
+
+        } finally{
+            if (client) client.release();
+        }
+    }
+
+    static async getStudyByHours(userId){
+        let client;
+        const studyByHour = {};
+        for(let i = 0; i < 24; i++){
+            studyByHour[i] = 0;
+        }
+        
+        try{
+            client = await pool.connect();
+            const res = await client.query(
+                `
+                SELECT ss.started_at, ss.ended_at
+                FROM study_session ss
+                WHERE ss.user_id = $1
+                `,
+                [userId]
+            );
+            
+            for(const row of res.rows){
+                const startDate = new Date(row.started_at);
+                const endDate = new Date(row.ended_at);
+                
+                let currentHour = startDate.getHours();
+                let currentTime = new Date(startDate);
+                
+                while(currentTime < endDate){
+                    const nextHour = new Date(currentTime);
+                    nextHour.setHours(currentTime.getHours() + 1, 0, 0, 0);
+                    
+                    const segmentEnd = nextHour < endDate ? nextHour : endDate;
+                    const minutesInHour = (segmentEnd - currentTime) / (1000 * 60);
+                    
+                    studyByHour[currentHour] += minutesInHour;
+                    
+                    currentTime = segmentEnd;
+                    currentHour = currentTime.getHours();
+                }
+            }
+            
+            const x = Object.keys(studyByHour).map(h => `${h}:00`);
+            const y = Object.values(studyByHour);
+            
+            return [{x, y, type: 'bar', name: 'Study Time by Hour of Day'}];
+            
+        } finally{
+            if (client) client.release();
+        }
+    }
+
 }
 
 module.exports = GraphFunctions;
