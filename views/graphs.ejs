@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="hr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Statistika učenja</title>
+    </head>
+    <body>
+
+        <h1>Statistika učenja</h1>
+
+        <select id="timeframe">
+            <option value="day">Dan</option>
+            <option value="week">Tjedan</option>
+            <option value="month">Mjesec</option>
+        </select>
+
+        <div id="graphContainer" data-user-id="<%= user ? user.id : '' %>">
+            <div id="graph1" style="width:100%;height:400px;"></div>
+            <div id="graph2" style="width:100%;height:400px;"></div>
+        </div>
+
+        <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+        <script src="/scripts/graphs.js"></script>
+
+    </body>
+
+</html>
+
