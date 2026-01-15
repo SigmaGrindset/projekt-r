@@ -12,7 +12,7 @@ router.use((req, res, next) => {
 // Graf 1: Vrijeme učenja po predmetu
 router.post('/first', async (req, res) => {
   try {
-    const userID = req.body.id;
+    const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyTimePerSubject(userID);
     return res.json(graphData);
   } catch (err) {
@@ -24,7 +24,7 @@ router.post('/first', async (req, res) => {
 // Graf 2: Učenje kroz vrijeme
 router.post('/second', async (req, res) => {
   try {
-    const userID = req.body.id;
+    const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyOverTime(userID);
     return res.json(graphData);
   } catch (err) {
@@ -36,7 +36,7 @@ router.post('/second', async (req, res) => {
 // Graf 3: Učenje po danima u tjednu
 router.post('/third', async (req, res) => {
   try {
-    const userID = req.body.id;
+    const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyByDaysOfWeek(userID);
     return res.json(graphData);
   } catch (err) {
@@ -48,7 +48,7 @@ router.post('/third', async (req, res) => {
 // Graf 4: Učenje po satima
 router.post('/fourth', async (req, res) => {
   try {
-    const userID = req.body.id;
+    const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyByHours(userID);
     return res.json(graphData);
   } catch (err) {
@@ -59,7 +59,7 @@ router.post('/fourth', async (req, res) => {
 
 // GET ruta za prikaz stranice s grafovima
 router.get("/", requireAuth, (req, res) => {
-  res.render("graphs",{ user: req.session.user });
+  res.render("graphs",{ /*user: req.session.user*/ });
 });
 
 module.exports = router;
