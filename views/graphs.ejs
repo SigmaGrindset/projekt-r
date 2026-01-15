@@ -3,28 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <title>Statistika učenja</title>
-    <link rel="stylesheet" href="/styles/graphs.css" />
+    <link rel="stylesheet" href="/styles/app.css" />
   </head>
   <body>
-    <h1>Statistika učenja</h1>
+    <header class="topbar">
+      <a class="brand" href="/app">LearnFlow</a>
 
-    <select id="timeframe">
-      <option value="day">Dan</option>
-      <option value="week">Tjedan</option>
-      <option value="month">Mjesec</option>
-    </select>
+      <nav class="nav">
+        <a href="/subjects">Predmeti</a>
+        <a href="/study-session">Sesije</a>
+        <a class="active" href="/graph">Grafovi</a>
 
-    <div id="graphContainer" data-user-id="<%= user ? user.id : '' %>">
-      <div id="graph1">
-        <div class="plot"></div>
-      </div>
+        <% if (user) { %>
+        <span class="userpill"><%= user.username %></span>
+        <a class="muted" href="/user/logout">Odjava</a>
+        <% } else { %>
+        <a href="/user/login">Login</a>
+        <% } %>
+      </nav>
+    </header>
+    <main class="container">
+        <div class="page-head">
+            <h1>Statistika učenja</h1>
+            <select id="timeframe">
+            <option value="day">Dan</option>
+            <option value="week">Tjedan</option>
+            <option value="month">Mjesec</option>
+            </select>
+        </div>
 
-      <div id="graph2">
-        <div class="plot"></div>
-      </div>
-    </div>
+        <div id="graphContainer" data-user-id="<%= user ? user.id : '' %>">
+            <div id="graph1">
+            <div class="plot"></div>
+            </div>
 
-    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
-    <script src="/scripts/graphs.js"></script>
+            <div id="graph2">
+            <div class="plot"></div>
+            </div>
+        </div>
+
+        <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+        <script src="/scripts/graphs.js"></script>
+    </main>
   </body>
 </html>

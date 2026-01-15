@@ -59,7 +59,7 @@ router.post('/fourth', async (req, res) => {
 
 // GET ruta za prikaz stranice s grafovima
 router.get("/", requireAuth, (req, res) => {
-  res.render("graphs",{ /*user: req.session.user*/ });
+  res.render("graphs",{ user: req.session.user});
 });
 
 module.exports = router;
