@@ -402,7 +402,9 @@ button:active{ transform: translateY(1px); }
 }
 
 #graph1,
-#graph2 {
+#graph2,
+#graph3,
+#graph4 {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -445,7 +447,9 @@ button:active{ transform: translateY(1px); }
   }
 
   #graph1,
-  #graph2 {
+  #graph2,
+  #graph3,
+  #graph4 {
     height: 420px;
     padding: 14px;
   }
