@@ -57,6 +57,17 @@ router.post('/fourth', async (req, res) => {
   }
 });
 
+router.post('/fifth', async (req, res) => {
+  try {
+    const userID = req.session.user.id;
+    const graphData = await GraphFunctions.githubActivity(userID);
+    return res.json(graphData);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Došlo je do greške pri dohvaćanju podataka za grafove.' });
+  }
+});
+
 // GET ruta za prikaz stranice s grafovima
 router.get("/", requireAuth, (req, res) => {
   res.render("graphs",{ user: req.session.user});

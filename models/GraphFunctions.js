@@ -176,6 +176,43 @@ class GraphFunctions {
         }
     }
 
+    static async githubActivity(userId){
+        let client;
+        const data = [];
+        try{
+            client = await pool.connect();
+            const res = await client.query(
+                `
+                WITH date_series AS (
+                    SELECT generate_series(
+                        CURRENT_DATE - INTERVAL '49 days',
+                        CURRENT_DATE,
+                        INTERVAL '1 day'
+                    )::date AS datum
+                )
+                SELECT 
+                    ds.datum,
+                    COALESCE(SUM(EXTRACT(EPOCH FROM (ss.ended_at - ss.started_at)) / 60), 0) AS ukupno_minuta
+                FROM date_series ds
+                LEFT JOIN study_session ss 
+                    ON DATE(ss.started_at) = ds.datum 
+                    AND ss.user_id = $1
+                GROUP BY ds.datum
+                ORDER BY ds.datum DESC;
+                `,
+                [userId]
+            );
+            for(const row of res.rows){
+               data.push({
+                    "date" : row.datum.toISOString().split('T')[0],
+                    "minutes" : Math.round(row.ukupno_minuta)
+               })
+            }
+            return data;
+        } finally{
+            if (client) client.release();
+        }
+    }
 }
 
 module.exports = GraphFunctions;
