@@ -16,10 +16,12 @@ class GraphFunctions {
             for(const interval of intervalList){
                 const res = await client.query(
                 `
-                SELECT subject.name AS subject_name, EXTRACT(EPOCH FROM SUM(ss.ended_at - ss.started_at))/60 AS total_study_time
-                FROM study_session ss
-                JOIN subject ON subject.id = ss.subject_id
-                WHERE ss.user_id = $1 AND (current_timestamp - ss.started_at) <= INTERVAL '1 ${interval}'
+                SELECT subject.name AS subject_name, 
+                    COALESCE(EXTRACT(EPOCH FROM SUM(ss.ended_at - ss.started_at))/60, 0) AS total_study_time
+                FROM subject LEFT JOIN study_session ss 
+                ON subject.id = ss.subject_id AND ss.user_id = $1 
+                    AND (current_timestamp - ss.started_at) <= INTERVAL '1 ${interval}'
+                WHERE subject.user_id = $1
                 GROUP BY subject.name
                 ORDER BY subject.name ASC
                 `,
@@ -32,7 +34,7 @@ class GraphFunctions {
             const dataByTimeframe = {};
             for (const interval of intervalList){
                 if (result[interval].length === 0) {
-                    dataByTimeframe[interval] = [{x: [], y: [], name: `Study Time in the last ${interval}`, type: 'bar'}];
+                    dataByTimeframe[interval] = {"error": "no subjects found"};
                     continue;
                 }
                 const x = [];
@@ -191,7 +193,7 @@ class GraphFunctions {
                     )::date AS datum
                 )
                 SELECT 
-                    ds.datum,
+                    ds.datum::text AS datum,
                     COALESCE(SUM(EXTRACT(EPOCH FROM (ss.ended_at - ss.started_at)) / 60), 0) AS ukupno_minuta
                 FROM date_series ds
                 LEFT JOIN study_session ss 
@@ -204,7 +206,7 @@ class GraphFunctions {
             );
             for(const row of res.rows){
                data.push({
-                    "date" : row.datum.toISOString().split('T')[0],
+                    "date" : row.datum,
                     "minutes" : Math.round(row.ukupno_minuta)
                })
             }

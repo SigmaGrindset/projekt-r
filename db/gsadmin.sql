@@ -23,8 +23,8 @@ CREATE TABLE subject
 CREATE TABLE study_session
 (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  started_at TIMESTAMPTZ NOT NULL,
-  ended_at TIMESTAMPTZ NOT NULL,
+  started_at TIMESTAMP NOT NULL,
+  ended_at TIMESTAMP NOT NULL,
   description TEXT,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   subject_id UUID NOT NULL REFERENCES subject(id) ON DELETE CASCADE,
