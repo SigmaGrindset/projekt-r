@@ -24,7 +24,10 @@
     </header>
     <main class="container">
         <div class="page-head">
+          <div>
             <h1>Statistika učenja</h1>
+            <p class="subtitle">Analiziraj svoj napredak kroz grafove 📈</p>
+          </div>
             <select id="timeframe">
             <option value="day">Dan</option>
             <option value="week">Tjedan</option>
@@ -48,6 +51,13 @@
             <div id="graph4">
             <div class="plot"></div>
             </div>
+
+           <div id="graph5-card" class="card heatmap-card">
+            <h3 class="heatmap-title">Dnevna aktivnost učenja</h3>
+            <p class="heatmap-desc">Tvoja aktivnost zadnjih 50 dana (tamnija boja = više minuta učenja po danu)</p>
+            <div id="graph5"></div>
+           </div>
+
         </div>
 
         <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>

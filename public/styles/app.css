@@ -394,17 +394,18 @@ button:active{ transform: translateY(1px); }
 }
 
 #graphContainer {
-  max-width: 980px;
+  max-width: 1320px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr; /* SAMO JEDNA KOLONA */
-  gap: 18px; /* razmak između grafova */
+  grid-template-columns: 1fr;
+  gap: 18px;
 }
 
 #graph1,
 #graph2,
 #graph3,
-#graph4 {
+#graph4,
+#graph5 {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -436,6 +437,54 @@ button:active{ transform: translateY(1px); }
   border-radius: 14px;
 }
 
+#graph5 {
+  display: grid;
+  grid-template-columns: repeat(10, 60px);
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.heat-day {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #ebedf0;
+}
+
+.heat-day::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.heat-day:hover {
+  cursor: pointer;
+}
+
+.heat-day:hover::after {
+  opacity: 1;
+}
+
+.lvl1 { background-color: #98FF98; }
+.lvl2 { background-color: #90EE90; }
+.lvl3 { background-color: #3ec93e; }
+.lvl4 { background-color: #2b952b; }
+.lvl5 { background-color: #1f7b1f; }
+.lvl6 { background-color: #006400; }
+
+
 /* MOBILE */
 @media (max-width: 600px) {
   body {
@@ -449,9 +498,27 @@ button:active{ transform: translateY(1px); }
   #graph1,
   #graph2,
   #graph3,
-  #graph4 {
+  #graph4,
+  #graph5 {
     height: 420px;
     padding: 14px;
   }
+}
+
+.heatmap-card {
+  align-items: center;
+  text-align: center;
+}
+
+.heatmap-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.heatmap-desc {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
