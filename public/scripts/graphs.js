@@ -19,6 +19,22 @@ async function drawGraphBySubject(timeframe) {
     });
 
     const data = await res.json();
+    const graphEl = document.getElementById("graph1");
+
+    if (data[timeframe]?.error) {
+      graphEl.style.display = "block";
+      graphEl.innerHTML = `
+        <div class = empty-graph>
+          Nema podataka za prikaz (dodaj barem jedan predmet)
+          <a class="link" href="/subjects">Idi na predmete →</a>
+        </div>
+        `;
+      graph1Initialized = false;
+      return;
+    }
+
+    graphEl.style.display = "block";
+
     let time = "";
     switch (timeframe) {
       case "day":

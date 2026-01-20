@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plan učenja</title>
+  <link rel="stylesheet" href="/styles/app.css" />
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/user">LearnFlow</a>
+
+  <nav class="nav">
+    <a href="/subjects">Predmeti</a>
+    <a href="/study-session">Sesije</a>
+    <a class="active" href="/plan">Plan</a>
+    <a href="/graph">Grafovi</a>
+
+    <% if (user) { %>
+      <span class="userpill"><%= user.username %></span>
+      <a class="muted" href="/user/logout">Odjava</a>
+    <% } %>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <div>
+      <h1>Plan učenja</h1>
+      <p class="subtitle">Isplaniraj što ćeš učiti po danima 📅</p>
+    </div>
+
+    <form class="mini-filter" method="GET" action="/plan">
+      <input type="date" name="date" value="<%= date %>" />
+      <button class="btn-soft">Prikaži</button>
+    </form>
+  </div>
+
+  <% if (message) { %>
+    <div class="flash"><%= message %></div>
+  <% } %>
+
+  <section class="grid">
+    <!-- ADD PLAN -->
+    <div class="card">
+      <div class="card-title">
+        <h2>Dodaj plan</h2>
+        <span class="pill">+ new</span>
+      </div>
+
+      <% if (subjects.length === 0) { %>
+        <div class="empty">
+          <p>Prvo dodaj barem jedan predmet.</p>
+          <a class="link" href="/subjects">Idi na predmete →</a>
+        </div>
+      <% } else { %>
+        <form method="POST" action="/plan" class="form">
+          <input type="hidden" name="date" value="<%= date %>" />
+
+          <div class="row">
+            <div>
+              <label>Predmet</label>
+              <select name="subject_id" required>
+                <% subjects.forEach(s => { %>
+                  <option
+                    value="<%= s.id %>"
+                    <%= formData?.subject_id == s.id ? 'selected' : '' %>>
+                    <%= s.name %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div>
+              <label>Planirane minute</label>
+              <input
+                type="number"
+                name="planned_minutes"
+                min="0"
+                required
+                value="<%= formData?.planned_minutes || '' %>" />
+            </div>
+          </div>
+
+          <div>
+            <label>Opis</label>
+            <input
+              name="description"
+              placeholder="npr. ponavljanje poglavlja 3"
+              value="<%= formData?.description || '' %>" />
+          </div>
+
+          <button class="btn-primary">Spremi plan</button>
+        </form>
+      <% } %>
+    </div>
+
+    <!-- LIST -->
+    <div class="card">
+      <div class="card-title">
+        <h2>Plan za <%= date %></h2>
+        <span class="pill"><%= items.length %></span>
+      </div>
+
+      <% if (items.length === 0) { %>
+        <div class="empty">
+          <p>Nema plana za ovaj dan.</p>
+        </div>
+      <% } else { %>
+        <ul class="list">
+          <% items.forEach(p => { %>
+            <li class="list-item">
+              <div class="list-left">
+                <div class="list-title">
+                  <span class="tag"><%= p.subject_name %></span>
+                  <span class="dot">•</span>
+                  <strong><%= p.planned_minutes %> min</strong>
+                  <% if (p.description) { %>
+                    <span class="dot">•</span>
+                    <span><%= p.description %></span>
+                  <% } %>
+                </div>
+              </div>
+
+              <div class="list-actions">
+                <form method="POST" action="/plan/delete/<%= p.id %>">
+                  <input type="hidden" name="date" value="<%= date %>" />
+                  <button class="btn-danger">Obriši</button>
+                </form>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -8,11 +8,12 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/app">LearnFlow</a>
+    <a class="brand" href="/user">LearnFlow</a>
 
     <nav class="nav">
       <a href="/subjects">Predmeti</a>
       <a class="active" href="/study-session">Sesije</a>
+      <a href="/plan">Plan</a>
       <a href="/graph">Grafovi</a>
 
       <% if (user) { %>
@@ -58,7 +59,7 @@
 
         <% if (subjectsSafe.length === 0) { %>
           <div class="empty">
-            <p>Prvo dodaj barem jedan predmet da možeš napravit session.</p>
+            <p>Prvo dodaj barem jedan predmet da možeš napraviti session.</p>
             <a class="link" href="/subjects">Idi na predmete →</a>
           </div>
         <% } else { %>

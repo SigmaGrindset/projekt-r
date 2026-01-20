@@ -522,3 +522,13 @@ button:active{ transform: translateY(1px); }
   color: var(--muted);
 }
 
+.empty-graph {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #777;
+  font-style: italic;
+  height: 420px;
+}
