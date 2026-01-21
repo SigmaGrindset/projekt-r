@@ -405,7 +405,8 @@ button:active{ transform: translateY(1px); }
 #graph2,
 #graph3,
 #graph4,
-#graph5 {
+#graph5,
+#graph6 {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -499,7 +500,8 @@ button:active{ transform: translateY(1px); }
   #graph2,
   #graph3,
   #graph4,
-  #graph5 {
+  #graph5,
+  #graph6 {
     height: 420px;
     padding: 14px;
   }

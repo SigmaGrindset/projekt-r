@@ -218,13 +218,15 @@ class GraphFunctions {
 
     // ...existing code...
 
-static async plannedVsActualStudy(userId){
+static async plannedVsActualStudy(userId) {
     let client;
     const intervalList = ['day', 'week', 'month'];
-    try{
+
+    try {
         client = await pool.connect();
         const result = {};
-        for(const interval of intervalList){
+
+        for (const interval of intervalList) {
             const res = await client.query(
                 `
                 SELECT 
@@ -233,17 +235,23 @@ static async plannedVsActualStudy(userId){
                     COALESCE(actual.total_actual, 0) AS actual_minutes
                 FROM subject
                 LEFT JOIN (
-                    SELECT subject_id, SUM(planned_minutes) AS total_planned
+                    SELECT 
+                        subject_id, 
+                        SUM(planned_minutes) AS total_planned
                     FROM calendar_item
                     WHERE user_id = $1
-                        AND (CURRENT_DATE - date) <= INTERVAL '1 ${interval}'
+                      AND date >= CURRENT_DATE - INTERVAL '1 ${interval}'
                     GROUP BY subject_id
                 ) planned ON subject.id = planned.subject_id
                 LEFT JOIN (
-                    SELECT subject_id, EXTRACT(EPOCH FROM SUM(ended_at - started_at))/60 AS total_actual
+                    SELECT 
+                        subject_id,
+                        EXTRACT(EPOCH FROM SUM(
+                            COALESCE(ended_at, CURRENT_TIMESTAMP) - started_at
+                        )) / 60 AS total_actual
                     FROM study_session
                     WHERE user_id = $1
-                        AND (current_timestamp - started_at) <= INTERVAL '1 ${interval}'
+                      AND started_at >= CURRENT_TIMESTAMP - INTERVAL '1 ${interval}'
                     GROUP BY subject_id
                 ) actual ON subject.id = actual.subject_id
                 WHERE subject.user_id = $1
@@ -251,47 +259,51 @@ static async plannedVsActualStudy(userId){
                 `,
                 [userId]
             );
+
             result[interval] = res.rows;
         }
 
         const dataByTimeframe = {};
-        for (const interval of intervalList){
+
+        for (const interval of intervalList) {
             if (result[interval].length === 0) {
-                dataByTimeframe[interval] = {"error": "no subjects found"};
+                dataByTimeframe[interval] = { error: 'no subjects found' };
                 continue;
             }
-            
-            const subjects = [];
-            const plannedData = [];
-            const actualData = [];
-            
-            for (const row of result[interval]){
-                subjects.push(row.subject_name);
-                plannedData.push(Number(row.planned_minutes) || 0);
-                actualData.push(Number(row.actual_minutes) || 0);
+
+            const x = [];
+            const planned = [];
+            const actual = [];
+
+            for (const row of result[interval]) {
+                x.push(row.subject_name);
+                planned.push(Number(row.planned_minutes) || 0);
+                actual.push(Number(row.actual_minutes) || 0);
             }
-            
+
             dataByTimeframe[interval] = [
-                { 
-                    x: subjects, 
-                    y: plannedData, 
-                    name: 'Planned', 
-                    type: 'bar' 
+                {
+                    x,
+                    y: planned,
+                    name: 'Planned',
+                    type: 'bar'
                 },
-                { 
-                    x: subjects, 
-                    y: actualData, 
-                    name: 'Actual', 
-                    type: 'bar' 
+                {
+                    x,
+                    y: actual,
+                    name: 'Actual',
+                    type: 'bar'
                 }
             ];
         }
-        
+
         return dataByTimeframe;
+
     } finally {
         if (client) client.release();
-        }
     }
+}
+
 
 }
 

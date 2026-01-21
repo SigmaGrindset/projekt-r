@@ -6,6 +6,7 @@ let graph2Initialized = false;
 let graph3Initialized = false;
 let graph4Initialized = false;
 let graph5Initialized = false;
+let graph6Initialized = false;
 
 // -------------------------------
 // Graf 1: Vrijeme učenja po predmetu
@@ -276,6 +277,80 @@ async function drawGithubActivity() {
 }
 
 // -------------------------------
+// Graf 6: Planned vs Actual
+// -------------------------------
+async function drawPlannedVsActual(timeframe) {
+  try {
+    const res = await fetch("/graph/sixth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: USER_ID }),
+    });
+
+    const data = await res.json();
+    const graphEl = document.getElementById("graph6");
+
+    if (!data[timeframe] || data[timeframe].error) {
+      graphEl.style.display = "block";
+      graphEl.innerHTML = `
+        <div class="empty-graph">
+          Nema planiranih ili stvarnih podataka za prikaz
+          <a class="link" href="/plan">Dodaj plan →</a>
+        </div>
+      `;
+      graph6Initialized = false;
+      return;
+    }
+
+    graphEl.style.display = "block";
+
+    let time = "";
+    switch (timeframe) {
+      case "day":
+        time = "(zadnjih 24h)"
+        break;
+      case "week":
+        time = "(zadnjih tjedan dana)"
+        break
+      case "month":
+        time = "(zadnjih mjesec dana)"
+      default:
+        break;
+    }
+
+    const layout = {
+      title: {
+        text: "Planned vs Actual učenje " + time,
+        font: { size: 18 },
+      },
+      barmode: "group",
+      autosize: true,
+      margin: { t: 50, l: 50, r: 200, b: 140 },
+      xaxis: {
+        title: "Predmet",
+        automargin: true,
+      },
+      yaxis: {
+        title: "Minute",
+      },
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+    };
+
+    if (!graph6Initialized) {
+      Plotly.newPlot("graph6", data[timeframe], layout, { responsive: true });
+      graph6Initialized = true;
+    } else {
+      Plotly.react("graph6", data[timeframe], layout);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+
+
+// -------------------------------
 // Timeframe select (day / week / month)
 // -------------------------------
 document.addEventListener("DOMContentLoaded", () => {
@@ -297,6 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
     drawStudyByDaysOfWeek();
     drawStudyByHours();
     drawGithubActivity();
+    drawPlannedVsActual(timeframe);
   }
 
   // inicijalni prikaz
