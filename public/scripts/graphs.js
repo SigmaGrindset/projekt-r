@@ -320,7 +320,7 @@ async function drawPlannedVsActual(timeframe) {
 
     const layout = {
       title: {
-        text: "Planned vs Actual učenje " + time,
+        text: "Planirano i odrađeno učenje " + time,
         font: { size: 18 },
       },
       barmode: "group",

@@ -285,13 +285,13 @@ static async plannedVsActualStudy(userId) {
                 {
                     x,
                     y: planned,
-                    name: 'Planned',
+                    name: 'Planirano',
                     type: 'bar'
                 },
                 {
                     x,
                     y: actual,
-                    name: 'Actual',
+                    name: 'Odrađeno',
                     type: 'bar'
                 }
             ];
