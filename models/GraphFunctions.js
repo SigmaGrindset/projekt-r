@@ -38,7 +38,7 @@ class GraphFunctions {
                     continue;
                 }
                 const x = [];
-                const y = [];
+                const y = []
                 for (const row of result[interval]){
                     x.push(row.subject_name);
                     y.push(Number(row.total_study_time) || 0);
@@ -215,6 +215,84 @@ class GraphFunctions {
             if (client) client.release();
         }
     }
+
+    // ...existing code...
+
+static async plannedVsActualStudy(userId){
+    let client;
+    const intervalList = ['day', 'week', 'month'];
+    try{
+        client = await pool.connect();
+        const result = {};
+        for(const interval of intervalList){
+            const res = await client.query(
+                `
+                SELECT 
+                    subject.name AS subject_name,
+                    COALESCE(planned.total_planned, 0) AS planned_minutes,
+                    COALESCE(actual.total_actual, 0) AS actual_minutes
+                FROM subject
+                LEFT JOIN (
+                    SELECT subject_id, SUM(planned_minutes) AS total_planned
+                    FROM calendar_item
+                    WHERE user_id = $1
+                        AND (CURRENT_DATE - date) <= INTERVAL '1 ${interval}'
+                    GROUP BY subject_id
+                ) planned ON subject.id = planned.subject_id
+                LEFT JOIN (
+                    SELECT subject_id, EXTRACT(EPOCH FROM SUM(ended_at - started_at))/60 AS total_actual
+                    FROM study_session
+                    WHERE user_id = $1
+                        AND (current_timestamp - started_at) <= INTERVAL '1 ${interval}'
+                    GROUP BY subject_id
+                ) actual ON subject.id = actual.subject_id
+                WHERE subject.user_id = $1
+                ORDER BY subject.name ASC
+                `,
+                [userId]
+            );
+            result[interval] = res.rows;
+        }
+
+        const dataByTimeframe = {};
+        for (const interval of intervalList){
+            if (result[interval].length === 0) {
+                dataByTimeframe[interval] = {"error": "no subjects found"};
+                continue;
+            }
+            
+            const subjects = [];
+            const plannedData = [];
+            const actualData = [];
+            
+            for (const row of result[interval]){
+                subjects.push(row.subject_name);
+                plannedData.push(Number(row.planned_minutes) || 0);
+                actualData.push(Number(row.actual_minutes) || 0);
+            }
+            
+            dataByTimeframe[interval] = [
+                { 
+                    x: subjects, 
+                    y: plannedData, 
+                    name: 'Planned', 
+                    type: 'bar' 
+                },
+                { 
+                    x: subjects, 
+                    y: actualData, 
+                    name: 'Actual', 
+                    type: 'bar' 
+                }
+            ];
+        }
+        
+        return dataByTimeframe;
+    } finally {
+        if (client) client.release();
+        }
+    }
+
 }
 
 module.exports = GraphFunctions;

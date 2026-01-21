@@ -14,6 +14,8 @@ router.post('/first', async (req, res) => {
   try {
     const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyTimePerSubject(userID);
+    console.log("ovo je /first");
+    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -26,6 +28,8 @@ router.post('/second', async (req, res) => {
   try {
     const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyOverTime(userID);
+    console.log("ovo je /second");
+    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -38,6 +42,8 @@ router.post('/third', async (req, res) => {
   try {
     const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyByDaysOfWeek(userID);
+    console.log("ovo je /third");
+    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -50,6 +56,8 @@ router.post('/fourth', async (req, res) => {
   try {
     const userID = req.session.user.id;
     const graphData = await GraphFunctions.getStudyByHours(userID);
+    console.log("ovo je /fourth");
+    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -61,6 +69,21 @@ router.post('/fifth', async (req, res) => {
   try {
     const userID = req.session.user.id;
     const graphData = await GraphFunctions.githubActivity(userID);
+    console.log("ovo je /fifth");
+    console.log(graphData);
+    return res.json(graphData);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Došlo je do greške pri dohvaćanju podataka za grafove.' });
+  }
+});
+
+router.post('/sixth', async (req, res) => {
+  try {
+    const userID = req.session.user.id;
+    const graphData = await GraphFunctions.plannedVsActualStudy(userID);
+    console.log("ovo je /sixth");
+    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
