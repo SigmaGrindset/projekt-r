@@ -36,10 +36,10 @@ router.post('/login', requireGuest, async (req, res) => {
         formData: { username: req.body.username }
       });
     }
-
+    const jwt_secret = process.env.JWT_SECRET || "secret"
     const token = jwt.sign(
       { id: user.id, username: user.username },
-      process.env.JWT_SECRET,
+      jwt_secret,
       { expiresIn: "7d" }
     );
 

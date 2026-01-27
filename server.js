@@ -41,7 +41,7 @@ app.use("/graph", graphRouter);
 // ✅ entry point u aplikaciju (ovo je ruta na koju treba vodit "Uđi u app")
 app.get("/app", (req, res) => {
   if (!req.user) {
-    return res.redirect("/user")
+    return res.redirect("/")
   }
   return res.redirect("/subjects"); // ili "/study-session" ako želiš da je to prva stranica
 });
