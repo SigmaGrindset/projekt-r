@@ -136,7 +136,7 @@ async function drawStudyOverTime(timeframe) {
         xanchor: "left",
         yanchor: "top",
         font: { size: 12 },
-        itemwidth: 70  
+        itemwidth: 70
       }
     };
 
@@ -251,6 +251,7 @@ async function drawGithubActivity() {
     const res = await fetch("/graph/fifth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: USER_ID })
     });
 
     const data = await res.json();

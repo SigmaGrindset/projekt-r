@@ -12,10 +12,8 @@ router.use((req, res, next) => {
 // Graf 1: Vrijeme učenja po predmetu
 router.post('/first', async (req, res) => {
   try {
-    const userID = req.session?.user.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.getStudyTimePerSubject(userID);
-    console.log("ovo je /first");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -26,10 +24,8 @@ router.post('/first', async (req, res) => {
 // Graf 2: Učenje kroz vrijeme
 router.post('/second', async (req, res) => {
   try {
-    const userID = req.session?.user?.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.getStudyOverTime(userID);
-    console.log("ovo je /second");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -40,10 +36,8 @@ router.post('/second', async (req, res) => {
 // Graf 3: Učenje po danima u tjednu
 router.post('/third', async (req, res) => {
   try {
-    const userID = req.session?.user?.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.getStudyByDaysOfWeek(userID);
-    console.log("ovo je /third");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -54,10 +48,8 @@ router.post('/third', async (req, res) => {
 // Graf 4: Učenje po satima
 router.post('/fourth', async (req, res) => {
   try {
-    const userID = req.session?.user?.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.getStudyByHours(userID);
-    console.log("ovo je /fourth");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -67,10 +59,8 @@ router.post('/fourth', async (req, res) => {
 
 router.post('/fifth', async (req, res) => {
   try {
-    const userID = req.session?.user?.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.githubActivity(userID);
-    console.log("ovo je /fifth");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
@@ -80,10 +70,8 @@ router.post('/fifth', async (req, res) => {
 
 router.post('/sixth', async (req, res) => {
   try {
-    const userID = req.session?.user?.id;
+    const userID = req.body.id;
     const graphData = await GraphFunctions.plannedVsActualStudy(userID);
-    console.log("ovo je /sixth");
-    console.log(graphData);
     return res.json(graphData);
   } catch (err) {
     console.error(err);
