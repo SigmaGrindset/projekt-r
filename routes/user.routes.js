@@ -43,7 +43,7 @@ router.post('/login', requireGuest, async (req, res) => {
     }
 
     req.session.user = user;
-    return res.redirect("/user");
+    return res.redirect("/");
   } catch (err) {
     return res.status(500).render('login', {
       message: 'Došlo je do greške. Pokušaj ponovno.',
