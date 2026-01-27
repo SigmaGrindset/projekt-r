@@ -5,15 +5,11 @@ const CalendarItem = require('../models/CalendarItem');
 const Subject = require('../models/Subject');
 const { requireAuth } = require("../middleware/userMiddleware");
 
-router.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  next();
-});
 
 // dohvacanje plana za datum /plan?date=YYYY-MM-DD
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
 
     const date = req.query.date || new Date().toISOString().slice(0, 10);
 
@@ -22,7 +18,7 @@ router.get('/', requireAuth, async (req, res) => {
 
     return res.render('plan', {
       message: null,
-      formData: { date }, 
+      formData: { date },
       date,
       subjects,
       items
@@ -41,7 +37,7 @@ router.get('/', requireAuth, async (req, res) => {
 // dodavanje plan itema
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
 
     await CalendarItem.createPlanItem(userID, req.body);
 
@@ -57,7 +53,7 @@ router.post('/', requireAuth, async (req, res) => {
       items
     });
   } catch (err) {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
     const date = req.body.date || new Date().toISOString().slice(0, 10);
 
     const subjects = await Subject.getSubjectsForUser(userID);
@@ -81,7 +77,7 @@ router.post('/', requireAuth, async (req, res) => {
 // BRISANJE PLANA
 router.post('/delete/:id', requireAuth, async (req, res) => {
   try {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
     const itemID = req.params.id;
 
     const date = req.body.date || new Date().toISOString().slice(0, 10);
@@ -122,7 +118,7 @@ router.post('/delete/:id', requireAuth, async (req, res) => {
 //PROMJENA PLANA
 router.post('/update/:id', requireAuth, async (req, res) => {
   try {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
     const itemID = req.params.id;
 
     const date = req.body.date || new Date().toISOString().slice(0, 10);
@@ -150,7 +146,7 @@ router.post('/update/:id', requireAuth, async (req, res) => {
       items
     });
   } catch (err) {
-    const userID = req.session.user.id;
+    const userID = req.user.id;
     const date = req.body.date || new Date().toISOString().slice(0, 10);
 
     const subjects = await Subject.getSubjectsForUser(userID);

@@ -3,21 +3,16 @@ const router = express.Router();
 const Subject = require('../models/Subject');
 const { requireAuth } = require("../middleware/userMiddleware");
 
-router.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  next();
-});
-
 
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id; 
+    const userId = req.user.id;
     const subjects = await Subject.getSubjectsForUser(userId);
 
-    return res.render('subjects', { 
-      message: null, 
-      formData: null, 
-      subjects 
+    return res.render('subjects', {
+      message: null,
+      formData: null,
+      subjects
     });
   } catch (err) {
     return res.render('subjects', {
@@ -31,7 +26,7 @@ router.get('/', requireAuth, async (req, res) => {
 //ZA DODAVANJE PREDMETA
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.user.id;
     await Subject.createSubject(userId, req.body);
 
     const subjects = await Subject.getSubjectsForUser(userId);
@@ -41,7 +36,7 @@ router.post('/', requireAuth, async (req, res) => {
       subjects
     });
   } catch (err) {
-    const userId = req.session.user.id;
+    const userId = req.user.id;
     const subjects = await Subject.getSubjectsForUser(userId);
 
     return res.render('subjects', {
@@ -55,7 +50,7 @@ router.post('/', requireAuth, async (req, res) => {
 
 router.post('/delete/:id', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.user.id;
     const subjectId = req.params.id;
 
     const check = await Subject.deleteSubject(userId, subjectId);

@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-router.use((req, res, next) => {
-  res.locals.user = req.session?.user || null;
-  next();
-});
+const jwt = require("jsonwebtoken")
 
 const User = require('../models/User');
 const { requireAuth, requireGuest } = require("../middleware/userMiddleware");
@@ -22,19 +18,18 @@ router.get('/register', requireGuest, (req, res) => {
 });
 
 router.post("/logout", requireAuth, (req, res) => {
-  req.session.user = null;
+  res.clearCookie("auth");
   return res.redirect("/user");
 });
 
 router.get("/logout", requireAuth, (req, res) => {
-  req.session.user = null;
+  res.clearCookie("auth")
   return res.redirect("/user");
 });
 
 router.post('/login', requireGuest, async (req, res) => {
   try {
-    const user = await User.validateUser(req.body); // { username } ili null
-
+    const user = await User.validateUser(req.body);
     if (!user) {
       return res.status(401).render('login', {
         message: 'Neispravno korisničko ime ili lozinka.',
@@ -42,9 +37,20 @@ router.post('/login', requireGuest, async (req, res) => {
       });
     }
 
-    req.session.user = user;
-    return res.redirect("/");
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("auth", token, {
+      httpOnly: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    return res.redirect("/app");
   } catch (err) {
+    console.log(err)
     return res.status(500).render('login', {
       message: 'Došlo je do greške. Pokušaj ponovno.',
       formData: { username: req.body.username }

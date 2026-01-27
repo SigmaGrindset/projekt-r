@@ -6,7 +6,7 @@ const StudySession = require("../models/StudySession");
 const Subject = require("../models/Subject");
 
 studySessionRouter.get("/", requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+  const userId = req.user.id;
 
   try {
     const startedAt = req.query?.startedAt || null;
@@ -34,7 +34,7 @@ studySessionRouter.get("/", requireAuth, async (req, res) => {
 });
 
 studySessionRouter.post("/", requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+  const userId = req.user.id;
 
   try {
     await StudySession.createStudySession({

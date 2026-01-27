@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 
 class User {
   static async validateUser(userLoginRequest) {
-    console.log(userLoginRequest);
     let client;
 
     try {

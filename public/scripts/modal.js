@@ -1,4 +1,3 @@
-console.log("modal.js")
 
 function openModal(id) {
   document.getElementById(id).style.display = "block";
