@@ -41,14 +41,17 @@ app.use("/graph", graphRouter);
 // ✅ entry point u aplikaciju (ovo je ruta na koju treba vodit "Uđi u app")
 app.get("/app", (req, res) => {
   if (!req.user) {
-    return res.redirect("/")
+    return res.redirect("/user/login")
   }
   return res.redirect("/subjects"); // ili "/study-session" ako želiš da je to prva stranica
 });
 
 // ✅ pametni root: ako je loginan ide u app, inače na landing (/user)
 app.get('/', (req, res) => {
-  return res.redirect('/app');
+  if (req.user) {
+    return res.redirect("/app")
+  }
+  return res.redirect('/user');
 });
 
 const port = process.env.PORT || 3000;
